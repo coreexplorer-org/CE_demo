@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Core Explorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Bitcoin Core Explorer</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="repository-info" class="mb-4">
+            <h1 id="repo-name">Loading repository...</h1>
+            <p id="repo-description"></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">Active Maintainers</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul id="maintainers-list" class="list-group list-group-flush">
+                            <li class="list-group-item">Loading maintainers...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <ul class="nav nav-tabs" id="prTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="open-tab" data-bs-toggle="tab" data-bs-target="#open" type="button" role="tab" aria-controls="open" aria-selected="true">Open PRs</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="closed-tab" data-bs-toggle="tab" data-bs-target="#closed" type="button" role="tab" aria-controls="closed" aria-selected="false">Closed PRs</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="merged-tab" data-bs-toggle="tab" data-bs-target="#merged" type="button" role="tab" aria-controls="merged" aria-selected="false">Merged PRs</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="prTabsContent">
+                    <div class="tab-pane fade show active" id="open" role="tabpanel" aria-labelledby="open-tab">
+                        <div class="list-group mt-3" id="open-prs-list">
+                            <div class="list-group-item">Loading open PRs...</div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="closed" role="tabpanel" aria-labelledby="closed-tab">
+                        <div class="list-group mt-3" id="closed-prs-list">
+                            <div class="list-group-item">Loading closed PRs...</div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="merged" role="tabpanel" aria-labelledby="merged-tab">
+                        <div class="list-group mt-3" id="merged-prs-list">
+                            <div class="list-group-item">Loading merged PRs...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/repository.js"></script>
+</body>
+</html>
+

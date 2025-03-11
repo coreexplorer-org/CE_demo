@@ -1,0 +1,83 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: none;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.pr-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pr-item:hover {
+  background-color: #f0f0f0;
+}
+
+.commit-item {
+  cursor: pointer;
+}
+
+.commit-details {
+  display: none;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.code-diff {
+  font-family: monospace;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.code-removed {
+  background-color: #ffdddd;
+}
+
+.code-added {
+  background-color: #ddffdd;
+}
+
+.review-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.review-ack {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.review-nack {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.review-neutral {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+

@@ -1,0 +1,39 @@
+{
+  "name": "bitcoin-core-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "chart.js": "^4.3.0",
+    "csv-parse": "^5.5.0",
+    "date-fns": "^3.3.1",
+    "next": "^13.4.4",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.9.0",
+    "react-tabs": "^6.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.2",
+    "tailwindcss-animate": "^1.0.5"
+  },
+  "resolutions": {
+    "date-fns": "^3.3.1"
+  },
+  "overrides": {
+    "date-fns": "^3.3.1"
+  },
+  "installConfig": {
+    "pnp": false
+  }
+}
+
