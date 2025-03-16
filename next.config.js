@@ -1,6 +1,6 @@
 const nextConfig = {
   experimental: {
-    appDir: true,
+    // appDir: true,
   },
   // Add this to help with dependency resolution
   webpack: (config, { isServer }) => {

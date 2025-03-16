@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs"
 import "react-tabs/style/react-tabs.css"
@@ -56,7 +57,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <FaCodeBranch className="text-orange-500 mr-3 text-2xl" />
+            <Image src="/core_explorer-png.png" alt="Logo" width={80} height={80} className="mr-3" />
               <h1 className="text-xl font-mono font-bold text-orange-400">Bitcoin Core Explorer</h1>
             </div>
             <a
