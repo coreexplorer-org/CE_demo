@@ -1,9 +1,9 @@
-import "./globals.css"
+import "./globals.css";
 
 export const metadata = {
   title: "Bitcoin Core Explorer",
   description: "Explore Bitcoin Core's development workflow",
-}
+};
 
 export default function RootLayout({ children }) {
   return (
@@ -31,6 +31,5 @@ export default function RootLayout({ children }) {
         </footer>
       </body>
     </html>
-  )
+  );
 }
-
