@@ -16,34 +16,33 @@ $(document).ready(() => {
     },
   })
 
-  // Load maintainers
-  $.ajax({
-    url: "/api/maintainers",
-    method: "GET",
-    dataType: "json",
-    success: (data) => {
-      const $maintainersList = $("#maintainers-list")
-      $maintainersList.empty()
-
-      if (data.length === 0) {
-        $maintainersList.append('<li class="list-group-item">No maintainers found</li>')
-        return
-      }
-
-      data.forEach((maintainer) => {
-        $maintainersList.append(`
-                    <li class="list-group-item">
-                        <strong>${maintainer.name}</strong><br>
-                        <small class="text-muted">${maintainer.email}</small>
-                    </li>
-                `)
-      })
+$.ajax({
+    url: "http://localhost/api/graphql",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      query: `
+        query GetActors {
+          actors {
+            name
+            email
+          }
+        }
+      `
+    }),
+    success: function(response) {
+      const actors = response.data.actors;
+      const $list = $('#actor-list');
+      $list.empty();
+      actors.forEach(actor => {
+        $list.append(`<li><strong>${actor.name}</strong> &lt;${actor.email}&gt;</li>`);
+      });
     },
-    error: (xhr, status, error) => {
-      console.error("Error loading maintainers:", error)
-      $("#maintainers-list").html('<li class="list-group-item">Error loading maintainers</li>')
-    },
-  })
+    error: function(xhr, status, error) {
+      console.error("GraphQL error:", error);
+      $('#actor-list').append(`<li>Error fetching actors</li>`);
+    }
+  });
 
   // Load pull requests for each tab
   loadPullRequests("open")

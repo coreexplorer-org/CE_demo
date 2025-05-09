@@ -18,13 +18,44 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch repository info
-        const repoResponse = await fetch("/api/repository")
-        const repoData = await repoResponse.json()
-        setRepository(repoData)
+        const repoResponse = await fetch("/api/graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            query: `
+              query {
+                repository(name: "bitcoin") {
+                  name
+                  url
+                  description
+                }
+              }
+            `
+          })
+        })
+
+        const result = await repoResponse.json()
+        setRepository(result.data.repository)
 
         // Fetch maintainers
-        const maintainersResponse = await fetch("/api/maintainers")
+        const maintainersResponse = await fetch("http://localhost/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        query GetActors {
+          actors {
+            name
+            email
+          }
+        }
+      `
+    })
+  })
         const maintainersData = await maintainersResponse.json()
         setMaintainers(maintainersData)
 
