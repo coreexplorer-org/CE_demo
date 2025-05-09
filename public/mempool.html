@@ -1,0 +1,424 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Explorer Kit - Mempool Files</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a1a;
+      color: #f7931a;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 10px;
+    }
+    .box {
+      background: #2d2d2d;
+      border: 1px solid #f7931a;
+      border-radius: 5px;
+      padding: 10px;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    #header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      height: 50px;
+    }
+    #logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    #logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    #header h1 {
+      margin: 0;
+      font-size: 1.2em;
+      flex: 1;
+      text-align: center;
+      color: #f7931a;
+    }
+    #menu-button {
+      width: 40px;
+      height: 30px;
+      background: #f7931a;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #menu-button:hover {
+      background: #e07b00;
+    }
+    hr {
+      border-top: 1px solid #f7931a;
+      margin: 10px 0;
+    }
+    #profile-box {
+      padding: 10px;
+      min-height: 150px;
+    }
+    #profile-info {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+    #repo-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    #text-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: center;
+    }
+    #text-container h2 {
+      font-size: 1.5em;
+      color: #f7931a;
+    }
+    #text-container h3 {
+      font-size: 1.2em;
+      color: #f7931a;
+    }
+    #text-container p {
+      font-size: 1em;
+      color: #f7931a;
+    }
+    #data-points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .data-point {
+      background: #1f1f1f;
+      border: 1px solid #f7931a;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+    }
+    .data-point span {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #f7931a;
+    }
+    .data-point p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+    }
+    #contributors {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .contributor-labels {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      padding-left: 150px;
+    }
+    .contributor-labels span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .contributor-labels .color-box {
+      width: 12px;
+      height: 12px;
+    }
+    .contributor-bar {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+    }
+    .contributor-name {
+      width: 150px;
+      font-size: 1em;
+      color: #f7931a;
+    }
+    .bar-container {
+      display: flex;
+      flex: 1;
+      min-height: 20px;
+      background: #1f1f1f;
+      border: 1px solid #f7931a;
+      border-radius: 3px;
+      overflow: hidden;
+      justify-content: flex-start;
+    }
+    .bar-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1a1a;
+      font-size: 0.8em;
+      white-space: nowrap;
+    }
+    .bar-segment.lines {
+      background: #f7931a;
+    }
+    .bar-segment.commits {
+      background: #00cc00;
+    }
+    .bar-segment.files {
+      background: #ff4d4d;
+    }
+    .bar-segment.lines:hover {
+      background: #e07b00;
+    }
+    .bar-segment.commits:hover {
+      background: #009900;
+    }
+    .bar-segment.files:hover {
+      background: #cc3333;
+    }
+    .bar-segment.small {
+      font-size: 0.6em; /* Smaller text for narrow segments */
+    }
+    @media (min-width: 600px) {
+      #repo-logo {
+        width: 100px;
+        height: 100px;
+      }
+      #text-container h2 {
+        font-size: 2em;
+      }
+      #text-container h3 {
+        font-size: 1.5em;
+      }
+      #data-points {
+        flex-direction: row;
+        gap: 20px;
+      }
+      .data-point {
+        flex: 1;
+      }
+      .contributor-labels {
+        padding-left: 200px;
+      }
+      .contributor-name {
+        width: 200px;
+      }
+      .bar-container {
+        min-height: 30px;
+      }
+      .bar-segment {
+        font-size: 0.9em;
+      }
+      .bar-segment.small {
+        font-size: 0.7em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div id="header">
+      <div id="logo">
+        <img src="https://i.imgur.com/0cx91au.png" alt="CEK Logo">
+      </div>
+      <h1>Core Explorer Kit - Mempool Files</h1>
+      <button id="menu-button" onclick="toggleMenu()">☰</button>
+    </div>
+    <hr>
+    <div id="profile-box">
+      <div id="profile-info">
+        <img id="repo-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" alt="Bitcoin Core Logo">
+        <div id="text-container">
+          <h2>Mempool Files</h2>
+          <h3>Bitcoin Core</h3>
+          <p>bitcoin/bitcoin</p>
+        </div>
+      </div>
+      <div id="data-points">
+        <div class="data-point">
+          <span id="loc">3,214</span>
+          <p>Lines of Code</p>
+        </div>
+        <div class="data-point">
+          <span id="files">4,321</span>
+          <p>Files</p>
+        </div>
+        <div class="data-point">
+          <span id="commits">44,727</span>
+          <p>Commits</p>
+        </div>
+      </div>
+      <hr>
+      <div id="contributors">
+        <div class="contributor-labels">
+          <span><div class="color-box" style="background: #f7931a;"></div>Lines</span>
+          <span><div class="color-box" style="background: #00cc00;"></div>Commits</span>
+          <span><div class="color-box" style="background: #ff4d4d;"></div>Files</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Menu toggle placeholder
+    function toggleMenu() {
+      console.log('Menu toggled');
+    }
+
+    // Real data
+    const db = {
+      repo: {
+        name: 'Bitcoin Core',
+        path: 'bitcoin/bitcoin',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg',
+        stats: {
+          linesOfCode: 3214,
+          files: 4321,
+          commits: 44727
+        }
+      },
+      contributors: [
+        { email: "morcos@chaincode.com", linesPercent: 0.5, commitsPercent: 29.3, filesTouched: 5 },
+        { email: "gzhao408@berkeley.edu", linesPercent: 1.4, commitsPercent: 23.7, filesTouched: 9 },
+        { email: "falke.marco@gmail.com", linesPercent: 14.5, commitsPercent: 7.2, filesTouched: 10 },
+        { email: "gsanders87@gmail.com", linesPercent: 0.7, commitsPercent: 6.8, filesTouched: 10 },
+        { email: "ask4ismailsadiq@gmail.com", linesPercent: 0.1, commitsPercent: 3.7, filesTouched: 3 },
+        { email: "sipa@ulyssis.org", linesPercent: 5.1, commitsPercent: 3.1, filesTouched: 5 },
+        { email: "practicalswift@users.noreply.github.com", linesPercent: 1.6, commitsPercent: 3.0, filesTouched: 5 },
+        { email: "luke-jr+git@utopios.org", linesPercent: 1.2, commitsPercent: 2.6, filesTouched: 3 },
+        { email: "jtimon@jtimon.cc", linesPercent: 0.2, commitsPercent: 2.5, filesTouched: 3 },
+        { email: "darosior@protonmail.com", linesPercent: 0.4, commitsPercent: 2.2, filesTouched: 3 },
+        { email: "32963518+hebasto@users.noreply.github.com", linesPercent: 4.2, commitsPercent: 1.8, filesTouched: 12 },
+        { email: "sdaftuar@gmail.com", linesPercent: 0.8, commitsPercent: 1.5, filesTouched: 5 },
+        { email: "jl2012@xbt.hk", linesPercent: 0.1, commitsPercent: 1.5, filesTouched: 2 },
+        { email: "aj@erisian.com.au", linesPercent: 0.7, commitsPercent: 1.4, filesTouched: 3 },
+        { email: "fanquake@gmail.com", linesPercent: 8.3, commitsPercent: 1.1, filesTouched: 5 },
+        { email: "github@achow101.com", linesPercent: 4.3, commitsPercent: 1.0, filesTouched: 6 },
+        { email: "contact@carldong.me", linesPercent: 1.1, commitsPercent: 0.9, filesTouched: 5 },
+        { email: "vd@FreeBSD.org", linesPercent: 0.6, commitsPercent: 0.8, filesTouched: 2 },
+        { email: "john@johnnewbery.com", linesPercent: 1.8, commitsPercent: 0.7, filesTouched: 4 },
+        { email: "russ@yanofsky.org", linesPercent: 1.0, commitsPercent: 0.6, filesTouched: 2 },
+        { email: "matt@mattcorallo.com", linesPercent: 1.5, commitsPercent: 0.6, filesTouched: 2 },
+        { email: "jtimon@monetize.io", linesPercent: 0.2, commitsPercent: 0.5, filesTouched: 1 },
+        { email: "uwblp@student.kit.edu", linesPercent: 0.1, commitsPercent: 0.5, filesTouched: 1 },
+        { email: "dobsonsa68@gmail.com", linesPercent: 0.7, commitsPercent: 0.5, filesTouched: 8 }
+      ]
+    };
+
+    // Load repo data
+    document.getElementById('loc').textContent = db.repo.stats.linesOfCode.toLocaleString();
+    document.getElementById('files').textContent = db.repo.stats.files.toLocaleString();
+    document.getElementById('commits').textContent = db.repo.stats.commits.toLocaleString();
+
+    // Load contributors (top 10)
+    const contributorsDiv = document.getElementById('contributors');
+    // Sort by combined linesPercent + commitsPercent
+    const sortedContributors = db.contributors
+      .sort((a, b) => (b.linesPercent + b.commitsPercent) - (a.linesPercent + a.commitsPercent))
+      .slice(0, 10);
+    const totalFiles = db.repo.stats.files; // 4321
+    sortedContributors.forEach(contributor => {
+      // Calculate filesPercent
+      const filesPercent = (contributor.filesTouched / totalFiles) * 100;
+      // Sum total contribution
+      const totalPercent = contributor.linesPercent + contributor.commitsPercent + filesPercent;
+      // Calculate proportional widths
+      let linesWidth = (contributor.linesPercent / totalPercent) * 100;
+      let commitsWidth = (contributor.commitsPercent / totalPercent) * 100;
+      let filesWidth = (filesPercent / totalPercent) * 100;
+      // Apply minimum width of 5%
+      const minWidth = 5;
+      if (linesWidth < minWidth) linesWidth = minWidth;
+      if (commitsWidth < minWidth) commitsWidth = minWidth;
+      if (filesWidth < minWidth) filesWidth = minWidth;
+      // Normalize to 100%
+      const totalWidth = linesWidth + commitsWidth + filesWidth;
+      linesWidth = (linesWidth / totalWidth) * 100;
+      commitsWidth = (commitsWidth / totalWidth) * 100;
+      filesWidth = (filesWidth / totalWidth) * 100;
+      // Determine if segments need smaller text
+      const linesClass = linesWidth < 10 ? 'small' : '';
+      const commitsClass = commitsWidth < 10 ? 'small' : '';
+      const filesClass = filesWidth < 10 ? 'small' : '';
+      const bar = document.createElement('div');
+      bar.className = 'contributor-bar';
+      bar.innerHTML = `
+        <div class="contributor-name">${contributor.email}</div>
+        <div class="bar-container">
+          <div class="bar-segment lines ${linesClass}" style="width: ${linesWidth}%">${contributor.linesPercent}%</div>
+          <div class="bar-segment commits ${commitsClass}" style="width: ${commitsWidth}%">${contributor.commitsPercent}%</div>
+          <div class="bar-segment files ${filesClass}" style="width: ${filesWidth}%">${contributor.filesTouched}</div>
+        </div>
+      `;
+      contributorsDiv.appendChild(bar);
+    });
+  </script>
+</body>
+</html>
