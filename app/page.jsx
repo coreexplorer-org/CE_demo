@@ -57,20 +57,20 @@ export default function Home() {
     })
   })
         const maintainersData = await maintainersResponse.json()
-        setMaintainers(maintainersData)
+        setMaintainers(maintainersData.data.actors)
 
         // Fetch PRs
-        const openResponse = await fetch("/api/pull-requests?status=open")
-        const openData = await openResponse.json()
-        setOpenPRs(openData)
+       // const openResponse = await fetch("/api/pull-requests?status=open")
+       // const openData = await openResponse.json()
+       // setOpenPRs(openData)
 
-        const closedResponse = await fetch("/api/pull-requests?status=closed")
-        const closedData = await closedResponse.json()
-        setClosedPRs(closedData)
+        //const closedResponse = await fetch("/api/pull-requests?status=closed")
+        //const closedData = await closedResponse.json()
+        //setClosedPRs(closedData)
 
-        const mergedResponse = await fetch("/api/pull-requests?status=merged")
-        const mergedData = await mergedResponse.json()
-        setMergedPRs(mergedData)
+     //   const mergedResponse = await fetch("/api/pull-requests?status=merged")
+       // const mergedData = await mergedResponse.json()
+       // setMergedPRs(mergedData)
 
         setLoading(false)
       } catch (error) {
