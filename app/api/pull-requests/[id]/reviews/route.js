@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { reviewsData } from "@/app/lib/mock-data"
+import { reviewsData } from "../../../../../app/lib/mock-data"
 
 export async function GET(request, { params }) {
   try {

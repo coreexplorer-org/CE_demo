@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { repositoryData } from "@/app/lib/mock-data"
+import { repositoryData } from "../../../app/lib/mock-data.js"
 
 export async function GET() {
   try {

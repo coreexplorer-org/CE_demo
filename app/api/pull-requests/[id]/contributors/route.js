@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { contributorsData } from "@/app/lib/mock-data"
+import { contributorsData } from "../../../../../app/lib/mock-data"
 // import { getContributorsByPrId } from "@/app/lib/data-utils";
 
 export async function GET(request, { params }) {

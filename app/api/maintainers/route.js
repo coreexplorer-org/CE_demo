@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { maintainersData } from "@/app/lib/mock-data"
+import { maintainersData } from "../../../app/lib/mock-data"
 
 export async function GET() {
   try {

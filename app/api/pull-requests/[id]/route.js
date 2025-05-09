@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { pullRequestDetailsData } from "@/app/lib/mock-data"
+import { pullRequestDetailsData } from "../../../../app/lib/mock-data"
 // import { getPullRequestById } from "@/app/lib/data-utils";
 
 export async function GET(request, { params }) {
